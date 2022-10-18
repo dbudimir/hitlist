@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 7777",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,7 +16,9 @@
     "next": "12.3.1",
     "next-connect": "^0.13.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "sass": "^1.55.0",
+    "styled-components": "^5.3.6"
   },
   "devDependencies": {
     "eslint": "8.25.0",

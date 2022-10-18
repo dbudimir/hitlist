@@ -9,9 +9,10 @@ const client = new MongoClient(process.env.DB_URL, {
 })
 
 async function database(req, res, next) {
+  console.log('test')
   if (!client.connect()) await client.connect()
   req.dbClient = client
-  req.db = client.db('queen-ballers')
+  req.db = client.db('hit-list')
   return next()
 }
 

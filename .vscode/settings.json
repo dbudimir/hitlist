@@ -1,0 +1,29 @@
+{
+  "cSpell.ignoreWords": [
+    "jetpack",
+    "postgrid",
+    "queenballers",
+    "undrafted",
+    "wpcomstaging",
+    "yoast"
+  ],
+  "[javascriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "prettier.singleQuote": true,
+  "prettier.printWidth": 100,
+  "prettier.semi": false,
+  "javascript.format.semicolons": "remove",
+  "typescript.format.semicolons": "remove",
+  "workbench.colorCustomizations": {
+    "titleBar.activeForeground": "#ffffff",
+    // "titleBar.border": "#b565f3",
+    "statusBar.background": "#000000"
+  }
+}
