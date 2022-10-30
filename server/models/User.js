@@ -10,6 +10,12 @@ const UserSchema = new mongoose.Schema(
     password: { type: String },
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
+    lists: [
+      {
+        ref: 'list',
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
   },
   {
     timestamps: true,
