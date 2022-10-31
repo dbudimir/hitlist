@@ -1,17 +1,49 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import Dynamic from 'next/dynamic'
 import axios from 'axios'
 import styled from 'styled-components'
 
 // Components
-import Map from './Map'
+const Map = Dynamic(import('./Map'), { ssr: false })
+
 import CreateList from './CreateList'
 import AddPlace from './AddPlace'
 
 // Style
 const CreateFlowContainer = styled.div`
   padding: 18px;
+  width: calc(100vw - 64px);
+  margin: 0 auto;
+  background: #ffffff;
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  height: calc(100% - 300px);
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+  overflow: scroll;
+  z-index: 10;
+  font-family: 'Poppins';
+  color: #393939;
+
+  h3 {
+    margin: 18px 0 6px;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  input,
+  textarea {
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px solid #eeeef1;
+    font-family: 'Poppins';
+  }
 `
 
 export default function New() {
@@ -53,21 +85,21 @@ export default function New() {
       places: listPlaces,
     }
 
-    axios.post(`/api/lists/create`, { ...hitList })
-
     if (listIsValid) {
-      console.log('its valid')
+      axios.post(`/api/lists/create`, { ...hitList })
+      alert('Great, that worked')
     }
   }
 
   return (
-    <div>
-      <Map listPlaces={listPlaces} />
-      <CreateFlowContainer>
-        <CreateList listName={listName} listDescription={listDescription} />
-        {
+    typeof window !== 'undefined' && (
+      <>
+        <Map listPlaces={listPlaces} />
+        <CreateFlowContainer onScroll={scroll}>
+          <CreateList listName={listName} listDescription={listDescription} />
+
           <div>
-            <h2>Add places to your hit-list</h2>
+            <h3>Add places to your hit-list</h3>
             {[...Array(listPlaces.length + 1)].map((e, i) => (
               <AddPlace
                 key={`addplace${i}`}
@@ -76,11 +108,11 @@ export default function New() {
               />
             ))}
           </div>
-        }
 
-        <hr />
-        <button onClick={onSaveHitList}>Save hit list</button>
-      </CreateFlowContainer>
-    </div>
+          <hr />
+          <button onClick={onSaveHitList}>Save hit list</button>
+        </CreateFlowContainer>
+      </>
+    )
   )
 }

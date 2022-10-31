@@ -1,17 +1,35 @@
 import { useState, useEffect } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
+import Script from 'next/script'
+import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import 'leaflet-active-area'
 import styled from 'styled-components'
 
 // Style
 const MapWindow = styled.div`
   width: 100%;
-  height: 30vh;
-  overflow: hidden;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+
+  .active-area {
+    position: absolute;
+    top: 48px;
+    left: 0px;
+    right: 0px;
+    height: 220px;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 9999;
+  }
 
   .map-container {
     width: 100%;
-    height: 30vh;
+    min-height: -webkit-fill-available;
+    position: fixed;
+
+    .place-icon {
+      z-index: 1;
+    }
   }
 `
 
@@ -24,52 +42,76 @@ const Map = ({ listPlaces }) => {
   const setUpMap = () => {
     console.log('do center')
     console.log(navigator.geolocation)
-    console.log(map)
+    console.log('the map', map)
+  }
+
+  const scroll = () => {
+    console.log('its scrolling')
   }
 
   useEffect(() => {
     // var startPos
 
-    window.onload = function () {
-      const geoSuccess = (position) => {
-        console.log(position)
-        setUserPosition({ lat: position.coords.latitude, lng: position.coords.longitude })
+    if (typeof window !== 'undefined') {
+      window.onload = () => {
+        const geoSuccess = (position) => {
+          console.log(position)
+          setUserPosition({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          })
+        }
+        navigator.geolocation.getCurrentPosition(geoSuccess)
       }
-      navigator.geolocation.getCurrentPosition(geoSuccess)
+
+      window.addEventListener('scroll', scroll, ['once'])
     }
 
     if (map && userPosition) {
-      console.log('userpos', userPosition)
-      console.log('do center')
-      console.log(navigator.geolocation)
+      map.setActiveArea('active-area')
       map.panTo(userPosition)
     }
   }, [map, userPosition])
 
+  console.log(map)
+
   useEffect(() => {
     console.log('the places changed')
     const markerBounds = listPlaces.map(({ location }) => location)
-    console.log(markerBounds)
 
-    map && map.fitBounds([markerBounds])
+    if (map && listPlaces.length) {
+      map.setActiveArea('active-area')
+      map.fitBounds([markerBounds])
+    }
   }, [listPlaces])
 
   return (
-    <MapWindow className="mapclass">
+    <MapWindow id="map">
+      {/* <Script src="L.activearea.js" /> */}
       <MapContainer
         className="map-container"
         whenReady={setUpMap}
         ref={setMap}
-        center={[0, 0]}
+        center={[38.9294066, -77.03725829999999]}
         zoom={15}
+        minZoom={10}
+        zoomControl={false}
       >
         <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
 
         {listPlaces.map(({ location: [lat, lng] }, i) => {
-          const icon = L.divIcon({
-            className: `marker-icon`,
-            html: renderToStaticMarkup(<div>My place</div>),
+          // let iconContainer = document.createElement('div')
+          //
+
+          const icon = L.icon({
+            // className: `place-icon`,
+            iconSize: [32, 32],
+            iconUrl: '/marker-icon.png',
+            // html: renderToStaticMarkup(
+            //   <Image src="/marker-icon.png" alt="marker" width="32" height="32" />
+            // ),
           })
+          // const icon = L.divIcon({ className: `place-icon`, html: '<div>My place</div>' })
 
           console.log({ lat, lng })
 
